@@ -2,6 +2,10 @@ local debugMode = false
 local logToFile
 local debugPrint
 
+local function takeCard(hand)
+    table.insert(hand, table.remove(deck, love.math.random(#deck))) -- # operator returns the number of elements in the table
+end
+
 function love.load()
     logToFile("love.load start")    
     -- init deck
@@ -14,9 +18,6 @@ function love.load()
     end
 
     -- deal starting hands
-    local function takeCard(hand)
-        table.insert(hand, table.remove(deck, love.math.random(#deck))) -- # operator returns the number of elements in the table
-    end
     playerHand = {}
     takeCard(playerHand)
     takeCard(playerHand)
@@ -42,6 +43,16 @@ function love.draw()
         table.insert(output, "suit: "..card.suit..", rank: "..card.rank)
     end
     love.graphics.print(table.concat(output, "\n"), 15, 15)
+end
+
+function love.keypressed(key)
+    if key == "h" then
+        takeCard(playerHand)
+        logToFile("Player took a card")
+    elseif key == "escape" then
+        logToFile("Quitting game")
+        love.event.quit()
+    end
 end
 
 logToFile = function(message)
